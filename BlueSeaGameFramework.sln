@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueSeaGameFramework.Core", "BlueSeaGameFramework.Core\BlueSeaGameFramework.Core.csproj", "{1CAA9C6E-8D4D-4979-8C83-01AC75960506}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueSeaGameFramework.Network", "BlueSeaGameFramework.Network\BlueSeaGameFramework.Network.csproj", "{F882133E-3D33-4B42-AC1B-9F9D79D8C4D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueSeaGameFramework.Core.Common", "BlueSeaGameFramework.Core.Common\BlueSeaGameFramework.Core.Common.csproj", "{595B4EF0-E800-4078-96D5-C0C787CF3790}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1CAA9C6E-8D4D-4979-8C83-01AC75960506}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CAA9C6E-8D4D-4979-8C83-01AC75960506}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CAA9C6E-8D4D-4979-8C83-01AC75960506}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CAA9C6E-8D4D-4979-8C83-01AC75960506}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F882133E-3D33-4B42-AC1B-9F9D79D8C4D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F882133E-3D33-4B42-AC1B-9F9D79D8C4D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F882133E-3D33-4B42-AC1B-9F9D79D8C4D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F882133E-3D33-4B42-AC1B-9F9D79D8C4D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{595B4EF0-E800-4078-96D5-C0C787CF3790}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{595B4EF0-E800-4078-96D5-C0C787CF3790}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{595B4EF0-E800-4078-96D5-C0C787CF3790}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{595B4EF0-E800-4078-96D5-C0C787CF3790}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
