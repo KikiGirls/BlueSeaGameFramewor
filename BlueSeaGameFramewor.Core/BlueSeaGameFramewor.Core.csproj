@@ -6,4 +6,10 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Reference Include="UnityEngine">
+        <HintPath>..\..\..\..\..\..\Program Files\Unity\Hub\Editor\2022.3.48f1c1\Editor\Data\Managed\UnityEngine.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>
