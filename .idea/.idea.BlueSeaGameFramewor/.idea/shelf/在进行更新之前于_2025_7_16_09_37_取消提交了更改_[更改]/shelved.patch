@@ -1,0 +1,50 @@
+Index: BlueSeaGameFramewor.Core/Readme.md
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>GameFramework.sln                # 解决方案文件\r\n├── Core/                       # 核心模块\r\n│   ├── GameFramework.Core.csproj\r\n│   ├── README.md               # 模块说明\r\n│   └── src/\r\n├── Modules/                    # 可选功能模块\r\n│   ├── Physics/\r\n│   ├── AI/\r\n│   └── Networking/\r\n├── Runtime/                    # 运行时支持\r\n├── Editor/                     # 编辑器扩展\r\n├── Tests/                      # 单元测试\r\n└── Demos/ \r\n\r\n\r\nGameFramework.Core/\r\n├── src/\r\n│   ├── Systems/            # 核心系统\r\n│   │   ├── EventSystem.cs\r\n│   │   └── Scheduler.cs\r\n│   ├── Utilities/          # 工具类\r\n│   │   ├── ObjectPool.cs\r\n│   │   └── Debugger.cs\r\n│   └── Interfaces/         # 接口定义\r\n│       ├── IModule.cs\r\n│       └── IService.cs\r\n├── Properties/\r\n└── Resources/             # 嵌入式资源\r\n\r\n\r\nGameFramework.Physics/\r\n├── src/\r\n│   ├── Core/               # 核心实现\r\n│   │   ├── CollisionSystem.cs\r\n│   │   └── Rigidbody.cs\r\n│   ├── Interfaces/         # 公开接口\r\n│   │   ├── IPhysicsWorld.cs\r\n│   │   └── ICollider.cs\r\n│   ├── Extensions/         # 扩展方法\r\n│   │   └── PhysicsExtensions.cs\r\n│   └── Utils/             # 内部工具\r\n│       └── SpatialHash.cs\r\n├── tests/                 # 测试代码（可选）\r\n├── docs/                 # 模块文档\r\n└── samples/              # 使用示例
+===================================================================
+diff --git a/BlueSeaGameFramewor.Core/Readme.md b/BlueSeaGameFramewor.Core/Readme.md
+--- a/BlueSeaGameFramewor.Core/Readme.md	(revision 1eadc8e1c5fe64beb6c909ec5dac5ce6cf2d6349)
++++ b/BlueSeaGameFramewor.Core/Readme.md	(date 1752629861130)
+@@ -42,4 +42,38 @@
+ │       └── SpatialHash.cs
+ ├── tests/                 # 测试代码（可选）
+ ├── docs/                 # 模块文档
+-└── samples/              # 使用示例
+\ No newline at end of file
++└── samples/              # 使用示例
++
++顶级命名空间 - 公司/组织名
++
++BlueSeaGameFramework
++
++项目层 - 区分不同项目
++
++BlueSeaGameFramework.Client
++
++BlueSeaGameFramework.Server
++
++BlueSeaGameFramework.Shared
++
++功能模块层 - 按功能划分
++
++Core (核心系统)
++
++AI (人工智能)
++
++UI (用户界面)
++
++Network (网络通信)
++
++Audio (音频系统)
++
++子模块层 - 进一步细分
++ 
++Core.Utilities (工具类)
++
++Core.DI (依赖注入)
++
++AI.BehaviorTree (行为树)
++
++UI.Widgets (UI控件)
+\ No newline at end of file

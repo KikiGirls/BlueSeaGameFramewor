@@ -1,6 +1,4 @@
-using Google.Protobuf;
-
-namespace BlueSeaGameFramework.Network.Message;
+namespace BlueSeaGameFramework.server.Network.Message;
 
 /// <summary>
 /// 网络消息包装器，包含业务消息及相关元信息（如时间戳、会话ID等）
@@ -11,5 +9,6 @@ public class MessageWrapper<T>
     public MessageWrapper(BufferEntity bufferEntity)
     {
         byte[] byteMessage = bufferEntity.ProtocolData;
+        int SessionId = bufferEntity.SessionId;
     }
 }

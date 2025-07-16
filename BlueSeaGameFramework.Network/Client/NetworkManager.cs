@@ -6,10 +6,10 @@ namespace BlueSeaGameFramework.Network.Client
     /// 网络管理器（静态类）
     /// 职责：封装客户端网络连接、消息发送和事件处理的核心功能
     /// </summary>
-    public static class NetworkManager
+    public class NetworkManager
     {
-        private static UClient client;      // 网络客户端实例
-        private static NetEvent netEvent;    // 网络事件处理器
+        public static UClient client;      // 网络客户端实例
+        public static NetEvent netEvent; // 网络事件处理器
 
         /// <summary>
         /// 初始化网络管理器
@@ -32,7 +32,7 @@ namespace BlueSeaGameFramework.Network.Client
         /// </summary>
         /// <param name="MsgId">消息ID枚举</param>
         /// <param name="iMessage">Protobuf消息对象</param>
-        public static void Send(IMessageId MsgId, IMessage iMessage) => client.Send(MsgId, iMessage);
+        public static void Send(MessageId MsgId, IMessage iMessage) => client.Send(MsgId, iMessage);
 
         /// <summary>
         /// 注册消息事件处理器
@@ -40,7 +40,7 @@ namespace BlueSeaGameFramework.Network.Client
         /// <typeparam name="T">消息类型（必须实现IMessage）</typeparam>
         /// <param name="msgId">消息ID</param>
         /// <param name="handler">消息处理回调</param>
-        public static void AddEventHandler<T>(IMessageId msgId, Action<MessageWrapper<T>> handler) 
+        public static void AddEventHandler<T>(MessageId msgId, Action<MessageWrapper<T>> handler) 
             where T : IMessage, new()
             => netEvent.AddEventHandler(msgId, handler);
 
@@ -50,7 +50,7 @@ namespace BlueSeaGameFramework.Network.Client
         /// <typeparam name="T">消息类型</typeparam>
         /// <param name="msgId">消息ID</param>
         /// <param name="handler">消息处理回调</param>
-        public static void RemoveEventHandler<T>(IMessageId msgId, Action<MessageWrapper<T>> handler) 
+        public static void RemoveEventHandler<T>(MessageId msgId, Action<MessageWrapper<T>> handler) 
             where T : IMessage
             => netEvent.RemoveEventHandler(msgId, handler);
 

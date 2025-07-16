@@ -10,9 +10,9 @@ namespace BlueSeaGameFramework.Network.Client
     public interface INetworkManager : IDisposable
     {
         void Connect(string ip, int port);
-        void Send(IMessageId MsgId, IMessage message);
-        void AddEventHandler<T>(IMessageId msgId, Action<MessageWrapper<T>> handler) where T : IMessage, new();
-        void RemoveEventHandler<T>(IMessageId msgId, Action<MessageWrapper<T>> handler) where T : IMessage;
+        void Send(MessageId MsgId, IMessage message);
+        void AddEventHandler<T>(MessageId msgId, Action<MessageWrapper<T>> handler) where T : IMessage, new();
+        void RemoveEventHandler<T>(MessageId msgId, Action<MessageWrapper<T>> handler) where T : IMessage;
         void Tick();
     }
 
@@ -21,8 +21,8 @@ namespace BlueSeaGameFramework.Network.Client
     /// </summary>
     public interface INetEvent
     {
-        void AddEventHandler<T>(IMessageId msgId, Action<MessageWrapper<T>> handler) where T : IMessage, new();
-        void RemoveEventHandler<T>(IMessageId msgId, Action<MessageWrapper<T>> handler) where T : IMessage;
+        void AddEventHandler<T>(MessageId msgId, Action<MessageWrapper<T>> handler) where T : IMessage, new();
+        void RemoveEventHandler<T>(MessageId msgId, Action<MessageWrapper<T>> handler) where T : IMessage;
         void Clear();
     }
 
@@ -32,7 +32,7 @@ namespace BlueSeaGameFramework.Network.Client
     public interface IUClient : IDisposable
     {
         void Connect(string ip, int port);
-        void Send(IMessageId MsgId, IMessage message);
+        void Send(MessageId MsgId, IMessage message);
         void Tick();
     }
 

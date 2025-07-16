@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 
-namespace BlueSeaGameFramework.Network.Client
+namespace BlueSeaGameFramework.server.Network.Client
 {
     // NetEvent 类作为单例管理网络事件的注册与分发
     public class NetEvent : Singleton<NetEvent>

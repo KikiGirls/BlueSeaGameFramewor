@@ -20,7 +20,7 @@ namespace Game.Net
         Action<BufferEntity> handleAction;//处理报文的函数 实际就是分发报文给各个游戏模块
 
         public UClient(USocket uSocket,IPEndPoint endPoint,int sendSN,int handleSN,int sessionID, Action<BufferEntity> dispatchNetEvent) {
-            this.uSocket = uSocket;
+            this.uSocket =S
             this.endPoint = endPoint;
             this.sendSN = sendSN;
             this.handleSN = handleSN;
@@ -110,7 +110,7 @@ namespace Game.Net
         ConcurrentDictionary<int, BufferEntity> sendPackage = new ConcurrentDictionary<int, BufferEntity>();
         
         //发送的接口
-        public  void Send(BufferEntity package)
+        public void Send(BufferEntity package)
         {
             package.time = TimeHelper.Now();//暂时先等于0
             sendSN += 1;//

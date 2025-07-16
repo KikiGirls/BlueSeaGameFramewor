@@ -1,5 +1,4 @@
-namespace BlueSeaGameFramework.Network.Message;
-
+namespace BlueSeaGameFramework.server.Network.Message;
 
 public static class MessageIdHelper
 {
@@ -23,4 +22,9 @@ public enum MessageId : int
     LoginRequest = 1001,
     LogoutRequest = 1002,
     ChatMessage = 1003,
+}
+
+public enum MessageType : int
+{
+    
 }
