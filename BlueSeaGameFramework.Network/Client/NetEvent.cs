@@ -29,7 +29,7 @@ namespace BlueSeaGameFramework.Network.Client
         /// </summary>
         /// <typeparam name="T">消息类型</typeparam>
         /// <param name="msgId">要移除事件处理程序的消息 ID</param>
-        public void RemoveEventHandler<T>(IMessageId msgId) where T : IMessage
+        public void RemoveEventHandler<T>(IMessageId msgId,  Action<MessageWrapper<T>> handler) where T : IMessage
         {
             // 参数检查
             if (msgId == null) throw new ArgumentNullException(nameof(msgId));
