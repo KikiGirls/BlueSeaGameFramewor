@@ -15,4 +15,8 @@
       <Compile Remove="Network\Message\ProtobufSerializer.cs" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\BlueSeaGameFramework.Network\BlueSeaGameFramework.Network.csproj" />
+    </ItemGroup>
+
 </Project>

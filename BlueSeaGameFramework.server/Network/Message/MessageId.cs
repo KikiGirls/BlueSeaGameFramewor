@@ -26,5 +26,7 @@ public enum MessageId : int
 
 public enum MessageType : int
 {
-    
+    ACK = 0,
+    Logic = 1,
+    Connect = 2,
 }

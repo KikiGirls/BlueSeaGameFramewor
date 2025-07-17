@@ -9,6 +9,7 @@ public static class MessageIdHelper
         if (Enum.IsDefined(typeof(MessageId), id))
         {
             return (MessageId)id;
+      
         }
         else
         {

@@ -1,22 +1,32 @@
 
 
+using System.Net;
+
 namespace BlueSeaGameFramework.Network.Client
 {
     /// <summary>
     /// 网络管理器（静态类）
     /// 职责：封装客户端网络连接、消息发送和事件处理的核心功能
     /// </summary>
-    public class NetworkManager
+    public class NetworkManager : Singleton<NetworkManager>
     {
-        public static UClient client;      // 网络客户端实例
-        public static NetEvent netEvent; // 网络事件处理器
+        public UClient client;      // 网络客户端实例
+        public NetEvent netEvent;  // 网络事件处理器
 
+        static IPEndPoint serverEndPoint;
+        static int myprot;
+
+        static public void SetCog(int myPort, string serverIp, int serverPort)
+        {
+            myprot = myPort;
+            serverEndPoint = new IPEndPoint(IPAddress.Parse(serverIp), serverPort);
+        }
         /// <summary>
         /// 初始化网络管理器
         /// </summary>
-        public static void Init()
+        public  void Init()
         {
-            client = new UClient();
+            client = new UClient(serverEndPoint, myprot);
             netEvent = NetEvent.Instance;
         }
 
@@ -25,14 +35,14 @@ namespace BlueSeaGameFramework.Network.Client
         /// </summary>
         /// <param name="ip">服务器IP地址</param>
         /// <param name="port">服务器端口号</param>
-        public static void Connect(string ip, int port) => client.Connect(ip, port);
+        public  void Connect(string ip, int port) => client.ConnectServer();
 
         /// <summary>
         /// 发送Protobuf消息
         /// </summary>
         /// <param name="MsgId">消息ID枚举</param>
         /// <param name="iMessage">Protobuf消息对象</param>
-        public static void Send(MessageId MsgId, IMessage iMessage) => client.Send(MsgId, iMessage);
+        public  void Send(MessageId MsgId, IMessage iMessage) => client.Send(MsgId, iMessage);
 
         /// <summary>
         /// 注册消息事件处理器
@@ -40,7 +50,7 @@ namespace BlueSeaGameFramework.Network.Client
         /// <typeparam name="T">消息类型（必须实现IMessage）</typeparam>
         /// <param name="msgId">消息ID</param>
         /// <param name="handler">消息处理回调</param>
-        public static void AddEventHandler<T>(MessageId msgId, Action<MessageWrapper<T>> handler) 
+        public  void AddEventHandler<T>(MessageId msgId, Action<MessageWrapper<T>> handler) 
             where T : IMessage, new()
             => netEvent.AddEventHandler(msgId, handler);
 
@@ -50,19 +60,19 @@ namespace BlueSeaGameFramework.Network.Client
         /// <typeparam name="T">消息类型</typeparam>
         /// <param name="msgId">消息ID</param>
         /// <param name="handler">消息处理回调</param>
-        public static void RemoveEventHandler<T>(MessageId msgId, Action<MessageWrapper<T>> handler) 
+        public  void RemoveEventHandler<T>(MessageId msgId, Action<MessageWrapper<T>> handler) 
             where T : IMessage
             => netEvent.RemoveEventHandler(msgId, handler);
 
         /// <summary>
         /// 网络轮询（需在主线程定期调用）
         /// </summary>
-        public static void Tick() => client.Tick();
+        public  void Tick() => client.Tick();
 
         /// <summary>
         /// 释放网络资源
         /// </summary>
-        public static void Dispose()
+        public  void Dispose()
         {
             client?.Dispose();
             client = null;
@@ -73,7 +83,7 @@ namespace BlueSeaGameFramework.Network.Client
         /// <summary>
         /// 重置网络管理器（先释放再初始化）
         /// </summary>
-        public static void Reset()
+        public  void Reset()
         {
             Dispose();
             Init();

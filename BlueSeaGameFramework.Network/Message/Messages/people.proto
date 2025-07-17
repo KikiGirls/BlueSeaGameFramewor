@@ -1,0 +1,54 @@
+syntax = "proto3";  // 使用 proto3 语法（推荐）
+
+package example.people;  // 包名（影响生成的代码命名空间）
+
+option csharp_namespace = "Example.People";  // C#专用命名空间（可选）
+
+// 定义枚举类型
+enum Gender {
+    UNSPECIFIED = 0;  // protobuf要求第一个枚举值必须为0
+    MALE = 1;
+    FEMALE = 2;
+    OTHER = 3;
+}
+
+// 定义子消息
+message Address {
+    string country = 1;
+    string city = 2;
+    string postal_code = 3;
+    string street = 4;
+}
+
+// 主消息定义
+message Person {
+    // 基础字段
+    int32 id = 1;                // 唯一ID
+    string name = 2;             // 姓名
+    string email = 3;            // 邮箱
+    Gender gender = 4;           // 性别（枚举）
+    repeated string phones = 5;  // 多个电话号码（列表）
+    Address address = 6;         // 嵌套消息
+    map<string, string> attributes = 7; // 扩展属性键值对
+    
+}
+
+// 包含Person的集合
+message People {
+    repeated Person persons = 1;
+}
+
+// 服务定义（gRPC使用）
+service PeopleService {
+    rpc GetPerson (PersonRequest) returns (Person);
+    rpc CreatePerson (Person) returns (PersonResponse);
+}
+
+message PersonRequest {
+    int32 id = 1;
+}
+
+message PersonResponse {
+    bool success = 1;
+    string message = 2;
+}
