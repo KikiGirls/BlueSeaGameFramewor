@@ -1,5 +1,6 @@
 namespace BlueSeaGameFramework.server.Network.Message;
 
+
 public static class MessageIdHelper
 {
     // 根据 ID 获取对应的枚举值，如果无效则返回 None
@@ -8,6 +9,7 @@ public static class MessageIdHelper
         if (Enum.IsDefined(typeof(MessageId), id))
         {
             return (MessageId)id;
+      
         }
         else
         {
@@ -22,11 +24,4 @@ public enum MessageId : int
     LoginRequest = 1001,
     LogoutRequest = 1002,
     ChatMessage = 1003,
-}
-
-public enum MessageType : int
-{
-    ACK = 0,
-    Logic = 1,
-    Connect = 2,
 }

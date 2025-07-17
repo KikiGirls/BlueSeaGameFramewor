@@ -9,6 +9,5 @@ public class MessageWrapper<T>
     public MessageWrapper(BufferEntity bufferEntity)
     {
         byte[] byteMessage = bufferEntity.ProtocolData;
-        int SessionId = bufferEntity.SessionId;
     }
 }

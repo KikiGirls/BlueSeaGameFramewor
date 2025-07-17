@@ -8,3 +8,5 @@ global using BlueSeaGameFramework.server.Network.Client;
 global using Google.Protobuf;
 global using BlueSeaGameFramework.server.Network.Message;
 global using BlueSeaGameFramework.server.Network.Buffer;
+global using BlueSeaGameFramework.server.Utils;
+global using BlueSeaGameFramework.server.Utils.Singleton;

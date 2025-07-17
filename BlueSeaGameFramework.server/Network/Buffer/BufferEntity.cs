@@ -12,7 +12,10 @@ namespace BlueSeaGameFramework.server.Network.Buffer
         /// <summary>
         /// 远程终结点(IP地址和端口)
         /// </summary>
-        public IPEndPoint EndPoint { get; set; }
+        /// public IPEndPoint receiverEndpoint { get; set; }
+        public IPEndPoint TargetEndpoint;
+
+        public IPEndPoint OriginEndpoint;
     
         #region 协议头和数据区
         /// <summary>
@@ -68,8 +71,18 @@ namespace BlueSeaGameFramework.server.Network.Buffer
         /// <summary>
         /// 默认构造函数
         /// </summary>
-        public BufferEntity()
+        public BufferEntity(IPEndPoint targetEndPoint, int sendSn)
         {
+            TargetEndpoint = targetEndPoint;
+            ProtocolSize = 0;
+            SessionId = 0;
+            SequenceNumber =sendSn;
+            ModuleId = 0;
+            MessageType = MessageType.CONNECT;
+            MessageId = MessageId.None;
+            ProtocolData = null;
+            SendTime = DateTime.UtcNow; // 使用UTC时间
+            
         }
 
         /// <summary>
@@ -82,12 +95,11 @@ namespace BlueSeaGameFramework.server.Network.Buffer
         /// <param name="messageType">消息类型</param>
         /// <param name="messageId">消息ID</param>
         /// <param name="protocolData">业务数据</param>
-        public BufferEntity(IPEndPoint endPoint, int sessionId, int sequenceNumber, 
+        public BufferEntity(int sessionId, int sequenceNumber, 
             int moduleId, MessageType messageType, MessageId messageId, 
             byte[] protocolData)
         {
             ProtocolSize = protocolData.Length;
-            EndPoint = endPoint;
             SessionId = sessionId;
             SequenceNumber = sequenceNumber;
             ModuleId = moduleId;
@@ -189,9 +201,10 @@ namespace BlueSeaGameFramework.server.Network.Buffer
         /// <param name="package">需要确认的原始数据包</param>
         public BufferEntity(BufferEntity package)
         {
+            TargetEndpoint = package.OriginEndpoint;
             // 复制协议头字段
             ProtocolSize = 0; // ACK包没有业务数据
-            EndPoint = package.EndPoint;
+            
             SessionId = package.SessionId;
             SequenceNumber = package.SequenceNumber;
             ModuleId = package.ModuleId;
@@ -201,6 +214,10 @@ namespace BlueSeaGameFramework.server.Network.Buffer
     
             // 直接序列化为网络数据包
             BufferData = SerializeToNetworkPacket(isAck:true);
+        }
+
+        public BufferEntity()
+        {
         }
     }    
 }

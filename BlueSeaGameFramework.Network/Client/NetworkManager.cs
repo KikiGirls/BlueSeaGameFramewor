@@ -16,7 +16,7 @@ namespace BlueSeaGameFramework.Network.Client
         static IPEndPoint serverEndPoint;
         static int myprot;
 
-        static public void SetCog(int myPort, string serverIp, int serverPort)
+        public static void SetCog(int myPort, string serverIp, int serverPort)
         {
             myprot = myPort;
             serverEndPoint = new IPEndPoint(IPAddress.Parse(serverIp), serverPort);

@@ -8,6 +8,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueSeaGameFramework.Core.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueSeaGameFramework.server", "BlueSeaGameFramework.server\BlueSeaGameFramework.server.csproj", "{950E2AE8-5762-4DEB-A06D-88AB231EA8E1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{BBC77C9F-E802-41BD-ACC3-A72EAE843C20}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFolder1", "SolutionFolder1", "{CAEE02AC-0968-4532-8E87-0900919487D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +34,9 @@ Global
 		{950E2AE8-5762-4DEB-A06D-88AB231EA8E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{950E2AE8-5762-4DEB-A06D-88AB231EA8E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{950E2AE8-5762-4DEB-A06D-88AB231EA8E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBC77C9F-E802-41BD-ACC3-A72EAE843C20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBC77C9F-E802-41BD-ACC3-A72EAE843C20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBC77C9F-E802-41BD-ACC3-A72EAE843C20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBC77C9F-E802-41BD-ACC3-A72EAE843C20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
