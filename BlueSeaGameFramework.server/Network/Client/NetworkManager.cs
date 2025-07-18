@@ -11,7 +11,7 @@ namespace BlueSeaGameFramework.server.Network.Client
                     // 网络客户端实例
         public NetEvent netEvent;  // 网络事件处理器
         ConcurrentDictionary<int, UClient> clients;
-        private UdpTransport uSocket;
+        public UdpTransport uSocket;
         static int myprot;
 
         public static void SetCog(int myPort)
@@ -23,6 +23,7 @@ namespace BlueSeaGameFramework.server.Network.Client
         /// </summary>
         public void Init()
         {
+            uSocket = new UdpTransport(myprot);
             clients = new ConcurrentDictionary<int, UClient>();
             netEvent = NetEvent.Instance;
         }
@@ -35,7 +36,7 @@ namespace BlueSeaGameFramework.server.Network.Client
         /// <param name="iMessage">Protobuf消息对象</param>
         public void Send(MessageId MsgId, IMessage iMessage, int sessionId)
         {
-            
+            GetClient(sessionId).Send(MsgId, iMessage);
         }
 
         /// <summary>
@@ -62,10 +63,19 @@ namespace BlueSeaGameFramework.server.Network.Client
         /// <summary>
         /// 释放网络资源
         /// </summary>
-        public  void Dispose()
+        public void Dispose()
         {
-            client?.Dispose();
-            client = null;
+            foreach (var client in clients.Values)
+            {
+                client.Dispose();
+            }
+            clients.Clear();
+
+            if (uSocket!=null)
+            {
+                uSocket.Close();
+                uSocket = null;
+            }
             netEvent?.Clear();
             netEvent = null;
         }
@@ -75,18 +85,20 @@ namespace BlueSeaGameFramework.server.Network.Client
             UClient client;
             if (clients.TryRemove(sessionid,out client))
             {
-                client.Close();
+                client.Dispose();
                 client = null;
             }
         
         }
         public UClient GetClient(int sessionid) {
-
             UClient client;
             if (clients.TryGetValue(sessionid, out client))
             {
+                Console.WriteLine($"{clients.Count}");
                 return client;
             }
+            
+            Console.WriteLine($"{clients.Keys.First()}");
             return null;
         }
 
@@ -97,6 +109,14 @@ namespace BlueSeaGameFramework.server.Network.Client
         {
             Dispose();
             Init();
+        }
+
+        private int sessionId = 1;
+        public void setConnect(BufferEntity bufferEntity)
+        {
+            sessionId++;
+            UClient client = new UClient(bufferEntity.OriginEndpoint, sessionId, bufferEntity.SequenceNumber);
+            clients.TryAdd(sessionId, client);
         }
     }
 }

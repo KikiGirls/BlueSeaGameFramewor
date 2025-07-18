@@ -84,7 +84,7 @@ namespace BlueSeaGameFramework.Network.Buffer
             MessageId = MessageId.None;
             ProtocolData = null;
             SendTime = DateTime.UtcNow; // 使用UTC时间
-            
+            BufferData = SerializeToNetworkPacket(isAck:false);
         }
 
         /// <summary>
@@ -109,6 +109,7 @@ namespace BlueSeaGameFramework.Network.Buffer
             MessageId = messageId;
             ProtocolData = protocolData ?? throw new ArgumentNullException(nameof(protocolData));
             SendTime = DateTime.UtcNow; // 使用UTC时间
+            BufferData = SerializeToNetworkPacket(isAck:false);
         }
 
         /// <summary>

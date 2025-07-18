@@ -83,6 +83,7 @@ namespace BlueSeaGameFramework.Network.Buffer
             
             // 设置目标地址
             bufferEntity.TargetEndpoint = targetEndPoint;
+            bufferEntity.BufferData = bufferEntity.SerializeToNetworkPacket(false);
             return bufferEntity;
         }
     }

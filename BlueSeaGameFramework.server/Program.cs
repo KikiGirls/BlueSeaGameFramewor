@@ -17,6 +17,7 @@ public class Server
 
     static void NetSystemInit()
     {
+        NetworkManager.SetCog(8890);
         NetworkManager.Instance.Init();
         
         Console.WriteLine("启动网络模块");

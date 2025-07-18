@@ -13,7 +13,7 @@ namespace BlueSeaGameFramework.Network.Client
         public IPEndPoint ServerEndPoint;
         
         // UDP传输层实例
-        UdpTransport uSocket;
+        public UdpTransport uSocket;
         
         // 会话ID（由服务器分配）
         public int sessionID;
@@ -70,7 +70,7 @@ namespace BlueSeaGameFramework.Network.Client
         {
             sendSN += 1;  // 递增序列号
             BufferEntity bufferEntity = BufferFactory.creatEntityForSend(msgId, iMessage, ServerEndPoint, sendSN, sessionID);  // 创建发送实体
-            uSocket.Send(bufferEntity);  // 通过UDP传输层发送
+            uSocket.Send(bufferEntity); // 通过UDP传输层发送
         }
 
         /// <summary>

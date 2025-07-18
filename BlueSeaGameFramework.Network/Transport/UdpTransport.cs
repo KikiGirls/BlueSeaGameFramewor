@@ -25,9 +25,13 @@ namespace BlueSeaGameFramework.Network.Transport
             udpClient = new UdpClient(MyPort);
             awaitHandle = new ConcurrentQueue<UdpReceiveResult>();
             sendPackage = new ConcurrentDictionary<int, BufferEntity>();
-            AsyncReceiveTask();  // 启动异步接收任务
-            CheckOutTime();       // 启动超时检测任务
+            AsyncReceiveTask(); // 启动异步接收任务
+            CheckOutTime(); // 启动超时检测任务
+            Task.Run(Handle, ct.Token);
         }
+
+        CancellationTokenSource ct = new CancellationTokenSource();
+        
 
         TimeSpan overtime = TimeSpan.FromMilliseconds(150);  // 超时时间设定为150ms
         
@@ -63,7 +67,8 @@ namespace BlueSeaGameFramework.Network.Transport
         /// </summary>
         public async void AsyncReceiveTask()
         {
-            while (udpClient != null && udpClient.Available > 0)
+            Console.WriteLine($"{udpClient.Client.LocalEndPoint}");
+            while (udpClient != null)
             {
                 try
                 {
@@ -86,16 +91,20 @@ namespace BlueSeaGameFramework.Network.Transport
         public async Task<bool> SendSafeAsync(byte[] data, IPEndPoint tragetEndPoint)
         {
             if (udpClient == null || data == null || data.Length == 0)
+            {
                 return false;
-
+            }
             try
             {
                 int sentBytes = await udpClient.SendAsync(data, data.Length, tragetEndPoint);
-                return sentBytes == data.Length; // 验证是否全部发送
+                Console.WriteLine($"{tragetEndPoint}");
+                if (sentBytes == data.Length); // 验证是否全部发送
+                Console.WriteLine("发送成功");
+                return true;
             }
             catch (SocketException ex) when (ex.SocketErrorCode == SocketError.ConnectionReset)
             {
-                // 目标不可达（ICMP错误）
+                Console.WriteLine("目标不可达（ICMP错误）");// 目标不可达（ICMP错误）
                 return false;
             }
             catch (ObjectDisposedException)
@@ -113,43 +122,47 @@ namespace BlueSeaGameFramework.Network.Transport
         /// <summary>
         /// 处理接收到的消息
         /// </summary>
-        public void Handle()
-        {
-            if (awaitHandle.TryDequeue(out UdpReceiveResult result))
-            {
-                try
+        async Task Handle()
+        {   
+            while (ct.Token.IsCancellationRequested == false){
+                if (awaitHandle.Count > 0 && awaitHandle.TryDequeue(out UdpReceiveResult result))
                 {
-                    BufferEntity bufferEntity = BufferFactory.creatEntityByResult(result.RemoteEndPoint, result.Buffer);
-                    Console.WriteLine("处理消息");
-                    
-                    // 根据消息类型进行不同处理
-                    switch (bufferEntity.MessageType)
+                    try
                     {
-                        case MessageType.ACK:
-                            HandleAckPacket(bufferEntity);  // 处理ACK确认包
-                            break;
-    
-                        case MessageType.Login:
-                            NetworkManager.Instance.client.HandleLogicPackage(bufferEntity);  // 处理登录逻辑
-                            SendAckPacket(bufferEntity);  // 发送ACK确认
-                            break;
-                        
-                        case MessageType.CONNECT:
-                            HandleConnect(bufferEntity);  // 处理连接请求
-                            SendAckPacket(bufferEntity);
-                            break;
-                        
-                        default:
-                            LogUnknownMessageType(bufferEntity.MessageType);  // 未知消息类型
-                            break;
+                        BufferEntity bufferEntity =
+                            BufferFactory.creatEntityByResult(result.RemoteEndPoint, result.Buffer);
+                        Console.WriteLine("处理消息");
+
+                        // 根据消息类型进行不同处理
+                        switch (bufferEntity.MessageType)
+                        {
+                            case MessageType.ACK:
+                                HandleAckPacket(bufferEntity); // 处理ACK确认包
+                                break;
+
+                            case MessageType.Login:
+                                NetworkManager.Instance.client.HandleLogicPackage(bufferEntity); // 处理登录逻辑
+                                SendAckPacket(bufferEntity); // 发送ACK确认
+                                break;
+
+                            case MessageType.CONNECT:
+                                HandleConnect(bufferEntity); // 处理连接请求
+                                SendAckPacket(bufferEntity);
+                                break;
+
+                            default:
+                                LogUnknownMessageType(bufferEntity.MessageType); // 未知消息类型
+                                break;
+                        }
+                    }
+                    catch (InvalidDataException ex)
+                    {
+                        Console.WriteLine(ex);
+                        throw;
                     }
                 }
-                catch (InvalidDataException ex)
-                {
-                    Console.WriteLine(ex);
-                    throw;
-                }
             }
+            
         }
 
         /// <summary>
@@ -193,7 +206,12 @@ namespace BlueSeaGameFramework.Network.Transport
         /// </summary>
         public void Close()
         {
-            if (udpClient != null) udpClient.Close();
+            ct.Cancel();
+            if (udpClient != null)
+            {
+                udpClient.Close();
+                udpClient = null;
+            }
         }
 
         /// <summary>

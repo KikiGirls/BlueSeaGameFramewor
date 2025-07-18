@@ -8,7 +8,7 @@ namespace BlueSeaGameFramework.server.Network.Client
     public class UClient
     {
         // 服务器终端地址
-        public IPEndPoint ServerEndPoint;
+        public IPEndPoint ClinetEndPoint;
         
         // UDP传输层实例
         UdpTransport uSocket;
@@ -33,29 +33,24 @@ namespace BlueSeaGameFramework.server.Network.Client
         /// </summary>
         /// <param name="serverEndPoint">服务器终结点</param>
         /// <param name="Myprot">本地绑定端口</param>
-        public UClient(IPEndPoint serverEndPoint, int Myprot)
+        public UClient(IPEndPoint clinetEndPoint, int sessionID, int handleSN)
         {
-            uSocket = new UdpTransport(Myprot);
-            ServerEndPoint = serverEndPoint;
+            isConnected = true;
+            uSocket = NetworkManager.Instance.uSocket;
+            ClinetEndPoint = clinetEndPoint;
             sendSN = 0;  // 初始化发送序列号
+            this.handleSN = handleSN;
             waitHandle = new ConcurrentDictionary<int, BufferEntity>();
+            Console.WriteLine($"有客户端连接，会话id是{sessionID}");
         }
 
-        /// <summary>
-        /// 连接服务器（发送连接请求）
-        /// </summary>
-        public void ConnectServer()
-        {
-            BufferEntity bufferEntity = BufferFactory.creatConnectEntity(ServerEndPoint, sendSN);
-            uSocket.Send(bufferEntity);  // 发送连接请求
-        }
+
 
         /// <summary>
         /// 释放资源
         /// </summary>
         public void Dispose()
-        {
-            uSocket.Close();  // 关闭UDP连接
+        { // 关闭UDP连接
             isConnected = false;  // 重置连接状态
         }
 
@@ -67,7 +62,7 @@ namespace BlueSeaGameFramework.server.Network.Client
         public void Send(MessageId msgId, IMessage iMessage)
         {
             sendSN += 1;  // 递增序列号
-            BufferEntity bufferEntity = BufferFactory.creatEntityForSend(msgId, iMessage, ServerEndPoint, sendSN, sessionID);  // 创建发送实体
+            BufferEntity bufferEntity = BufferFactory.creatEntityForSend(msgId, iMessage, ClinetEndPoint, sendSN, sessionID);  // 创建发送实体
             uSocket.Send(bufferEntity);  // 通过UDP传输层发送
         }
 
@@ -132,9 +127,6 @@ namespace BlueSeaGameFramework.server.Network.Client
         public void setConnect(BufferEntity bufferEntity)
         {
             isConnected = true;  // 标记为已连接
-            sessionID = bufferEntity.SessionId;  // 记录会话ID
-            handleSN = bufferEntity.SequenceNumber; // 初始化已处理序列号
-            Console.WriteLine($"已连接服务器，会话id{sessionID},初始化序列号{handleSN}");
         }
     }
 }
