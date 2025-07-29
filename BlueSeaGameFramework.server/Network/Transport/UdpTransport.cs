@@ -35,23 +35,28 @@ namespace BlueSeaGameFramework.server.Network.Transport
         private async void CheckOutTime()
         {
             await Task.Delay(overtime);
+            var keysToRemove = new List<(int SessionId, int SequenceNumber)>();
             foreach (var package in sendPackage.Values)
             {
                 // 检查是否超过最大重试次数（10次）
                 if (package.RetryCount >= 10)
                 {
-                    Console.WriteLine($"重发次数超过10次,关闭对应socket");
+                    Console.WriteLine($"重发次数超过10次,关闭对应Clinet连接:{package.SessionId}");
                     NetworkManager.Instance.RemoveClient(package.SessionId);
-                    return;
+                    keysToRemove.Add((package.SessionId, package.SequenceNumber));
                 }
                
                 // 动态计算超时时间：(重试次数+1)*基础超时时间
-                if (DateTime.Now - package.SendTime >= (package.RetryCount + 1) * overtime)
+                else if (DateTime.Now - package.SendTime >= (package.RetryCount + 1) * overtime)
                 {
                     package.RetryCount += 1;
                     Console.WriteLine($"超时重发,次数:{package.RetryCount}");
                     SendSafeAsync(package.BufferData, package.TargetEndpoint);  // 重新发送数据
                 }
+            }
+            foreach (var key in keysToRemove)
+            {
+                sendPackage.TryRemove(key, out _); // 使用 `out _` 忽略返回值
             }
             CheckOutTime();  // 递归调用形成循环检测
         }
@@ -61,15 +66,15 @@ namespace BlueSeaGameFramework.server.Network.Transport
         /// </summary>
         public async void AsyncReceiveTask()
         {
-            Console.WriteLine("正在监听");
-            Console.WriteLine($"{udpClient.Client.LocalEndPoint}");
+            Debug.Log("AsyncReceiveTask()正在监听");
+            Debug.Log($"正在监听的EndPoint{udpClient.Client.LocalEndPoint}");
             while (udpClient != null)
             {
                 try
                 {
                     UdpReceiveResult result = await udpClient.ReceiveAsync();
-                    awaitHandle.Enqueue(result);  // 将接收结果加入处理队列
-                    Console.WriteLine("接受到了消息");
+                    awaitHandle.Enqueue(result); // 将接收结果加入处理队列、
+                    Debug.Log("接受到了来自客户端的消息");
                 }
                 catch (Exception e)
                 {
@@ -91,12 +96,15 @@ namespace BlueSeaGameFramework.server.Network.Transport
             try
             {
                 int sentBytes = await udpClient.SendAsync(data, data.Length, tragetEndPoint);
-                Console.WriteLine($"{tragetEndPoint}");
-                if (tragetEndPoint == null)
+                Debug.Log($"尝试向端口：{tragetEndPoint}，发送数据包");
+                if (sentBytes == data.Length)
                 {
-                    Console.WriteLine("成功发送22");
+                    Debug.Log($"成功，向{tragetEndPoint}发送数据包");
                 }
-                Console.WriteLine("成功发送");
+                else
+                {
+                    Debug.LogError($"失败，向{tragetEndPoint}发送数据包");
+                }
                 return sentBytes == data.Length; // 验证是否全部发送
             }
             catch (SocketException ex) when (ex.SocketErrorCode == SocketError.ConnectionReset)
@@ -128,7 +136,7 @@ namespace BlueSeaGameFramework.server.Network.Transport
                     try
                     {
                         BufferEntity bufferEntity = BufferFactory.creatEntityByResult(result.RemoteEndPoint, result.Buffer);
-                        Console.WriteLine("处理消息");
+                        Console.WriteLine("处理收到的数据包，将其转为BufferEntity，交给相应模块处理");
                     
                         // 根据消息类型进行不同处理
                         switch (bufferEntity.MessageType)
@@ -139,9 +147,7 @@ namespace BlueSeaGameFramework.server.Network.Transport
     
                             case MessageType.Login:
                                 SendAckPacket(bufferEntity);
-                                Console.WriteLine("q");
-                                NetworkManager.Instance.GetClient(bufferEntity.SessionId).HandleLogicPackage(bufferEntity); 
-                                Console.WriteLine("q");// 处理登录逻辑
+                                NetworkManager.Instance.GetClient(bufferEntity.SessionId).HandleLogicPackage(bufferEntity); // 处理登录逻辑
                                   // 发送ACK确认
                                 break;
                         
@@ -177,7 +183,7 @@ namespace BlueSeaGameFramework.server.Network.Transport
         /// </summary>
         private void SendAckPacket(BufferEntity bufferEntity)
         {
-            Console.WriteLine("发送ack");
+            Debug.Log($"收到消息发送对应ack，来自客户端sn：{bufferEntity.SessionId}，消息序号是:{bufferEntity.SequenceNumber}");
             BufferEntity ackBuffer = BufferFactory.creatAckBuffer(bufferEntity);
             SendSafeAsync(ackBuffer.BufferData, ackBuffer.TargetEndpoint);
         }
@@ -189,7 +195,7 @@ namespace BlueSeaGameFramework.server.Network.Transport
         {
             if (sendPackage.TryRemove((bufferEntity.SessionId,bufferEntity.SequenceNumber), out bufferEntity))
             {
-                Console.WriteLine($"收到ACK确认报文,序号是:{bufferEntity.SequenceNumber}");
+                Debug.Log($"已处理，收到ACK确认报文,来自客户端sn：{bufferEntity.SessionId}，消息序号是:{bufferEntity.SequenceNumber}d");
             }
         }
         
@@ -198,7 +204,7 @@ namespace BlueSeaGameFramework.server.Network.Transport
         /// </summary>
         private void LogUnknownMessageType(MessageType bufferEntityMessageType)
         {
-            Console.WriteLine("收到未知消息");
+            Debug.LogError("收到未知消息");
         }
 
         /// <summary>

@@ -68,6 +68,7 @@ namespace BlueSeaGameFramework.Network.Client
         /// <param name="iMessage">消息体</param>
         public void Send(MessageId msgId, IMessage iMessage)
         {
+            Console.WriteLine($"{sessionID}");
             sendSN += 1;  // 递增序列号
             BufferEntity bufferEntity = BufferFactory.creatEntityForSend(msgId, iMessage, ServerEndPoint, sendSN, sessionID);  // 创建发送实体
             uSocket.Send(bufferEntity); // 通过UDP传输层发送

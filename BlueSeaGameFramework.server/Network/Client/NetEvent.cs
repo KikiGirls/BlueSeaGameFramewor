@@ -16,6 +16,7 @@ namespace BlueSeaGameFramework.server.Network.Client
         /// <param name="handler">处理事件的委托</param>
         public void AddEventHandler<T>(MessageId msgId, Action<MessageWrapper<T>> handler) where T :  new()
         {
+            
             // 参数检查
             if (msgId == null) throw new ArgumentNullException(nameof(msgId));
             if (handler == null) throw new ArgumentNullException(nameof(handler));

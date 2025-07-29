@@ -141,6 +141,7 @@ namespace BlueSeaGameFramework.Network.Transport
                                 break;
 
                             case MessageType.Login:
+                                if (bufferEntity.SessionId != NetworkManager.Instance.client.sessionID) continue;
                                 NetworkManager.Instance.client.HandleLogicPackage(bufferEntity); // 处理登录逻辑
                                 SendAckPacket(bufferEntity); // 发送ACK确认
                                 break;

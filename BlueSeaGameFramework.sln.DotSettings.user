@@ -7,6 +7,7 @@
 &lt;/AssemblyExplorer&gt;</s:String>
 	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=1caa9c6e_002D8d4d_002D4979_002D8c83_002D01ac75960506_0023BlueSeaGameFramework_002ECore/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=595b4ef0_002De800_002D4078_002D96d5_002Dc0c787cf3790_0023BlueSeaGameFramework_002ECore_002ECommon/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=950e2ae8_002D5762_002D4deb_002Da06d_002D88ab231ea8e1_0023BlueSeaGameFramework_002Eserver/@EntryIndexedValue">True</s:Boolean>
 	
 	
 	</wpf:ResourceDictionary>

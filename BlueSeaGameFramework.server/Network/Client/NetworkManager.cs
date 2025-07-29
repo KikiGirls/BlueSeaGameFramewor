@@ -14,6 +14,16 @@ namespace BlueSeaGameFramework.server.Network.Client
         public UdpTransport uSocket;
         static int myprot;
 
+        public void broadcast(BufferEntity bufferEntity)
+        {
+            foreach (var clientSessid in clients.Keys)
+            {
+                if (clientSessid != bufferEntity.SessionId)
+                {
+                    GetClient(clientSessid).SendBroadcastBuffer(bufferEntity);
+                }
+            }
+        }
         public static void SetCog(int myPort)
         {
             myprot = myPort;
@@ -94,11 +104,10 @@ namespace BlueSeaGameFramework.server.Network.Client
             UClient client;
             if (clients.TryGetValue(sessionid, out client))
             {
-                Console.WriteLine($"{clients.Count}");
+                Debug.Log("获取到客户端");
                 return client;
             }
-            
-            Console.WriteLine($"{clients.Keys.First()}");
+            Debug.Log($"未获取到客户端{sessionid}");
             return null;
         }
 
@@ -115,6 +124,7 @@ namespace BlueSeaGameFramework.server.Network.Client
         public void setConnect(BufferEntity bufferEntity)
         {
             sessionId++;
+            Debug.Log($"收到连接请求，来自端口{bufferEntity.OriginEndpoint}");
             UClient client = new UClient(bufferEntity.OriginEndpoint, sessionId, bufferEntity.SequenceNumber);
             clients.TryAdd(sessionId, client);
         }

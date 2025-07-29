@@ -8,11 +8,17 @@ using Example.People;
 using Google.Protobuf;
 Console.WriteLine("Hello, World");
 People temp = new People();
-NetworkManager.SetCog(8899,"127.0.0.1", 8890);
+NetworkManager.SetCog(8891,"127.0.0.1", 8890);
 NetworkManager.Instance.Init();
-NetworkManager.Instance.Connect("192.168.0.144", 8890);
+NetworkManager.Instance.Connect();
 
 Console.WriteLine("Hello, World!");
+while (true)
+{
+    if (Console.ReadKey().Key == ConsoleKey.A)
+    {
+        NetworkManager.Instance.Send(MessageId.None, temp);
+    }
+}
 
-NetworkManager.Instance.Send(MessageId.None, temp);
 Console.ReadLine();

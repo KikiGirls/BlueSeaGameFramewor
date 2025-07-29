@@ -51,10 +51,10 @@ namespace BlueSeaGameFramework.server.Network.Buffer
         /// <param name="targetEndPoint">目标服务器地址</param>
         /// <param name="sendSn">发送序列号</param>
         /// <returns>连接请求包实例</returns>
-        public static BufferEntity creatConnectEntity(IPEndPoint targetEndPoint, int sendSn)
+        public static BufferEntity creatConnectEntity(IPEndPoint targetEndPoint, int sendSn, int  sessionId)
         {
             // 创建包含目标地址和序列号的基础连接包
-            BufferEntity bufferEntity = new BufferEntity(targetEndPoint, sendSn);
+            BufferEntity bufferEntity = new BufferEntity(targetEndPoint, sendSn,sessionId);
             return bufferEntity;
         }
 
@@ -84,6 +84,16 @@ namespace BlueSeaGameFramework.server.Network.Buffer
             // 设置目标地址
             bufferEntity.TargetEndpoint = targetEndPoint;
             bufferEntity.BufferData = bufferEntity.SerializeToNetworkPacket(false);
+            return bufferEntity;
+        }
+
+
+        public static BufferEntity creatEntityforBroadcast(IPEndPoint clinetEndPoint, int sendSn, int sessionId,
+            byte[] bufferEntityProtocolData, MessageId bufferEntityMessageId, int bufferEntityProtocolSize)
+        {
+            Debug.Log("创建广播报文成功");
+            BufferEntity bufferEntity = new BufferEntity(clinetEndPoint, sendSn, sessionId, bufferEntityProtocolData,bufferEntityMessageId,bufferEntityProtocolSize);
+            Debug.Log("创建广播报文成功");
             return bufferEntity;
         }
     }

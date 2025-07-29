@@ -35,7 +35,7 @@ namespace BlueSeaGameFramework.Network.Client
         /// </summary>
         /// <param name="ip">服务器IP地址</param>
         /// <param name="port">服务器端口号</param>
-        public  void Connect(string ip, int port) => client.ConnectServer();
+        public  void Connect() => client.ConnectServer();
 
         /// <summary>
         /// 发送Protobuf消息

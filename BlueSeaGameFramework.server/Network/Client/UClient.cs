@@ -7,11 +7,11 @@ namespace BlueSeaGameFramework.server.Network.Client
     /// </summary>
     public class UClient
     {
-        // 服务器终端地址
+        // 客户端终端地址
         public IPEndPoint ClinetEndPoint;
         
         // UDP传输层实例
-        UdpTransport uSocket;
+        public UdpTransport uSocket;
         
         // 会话ID（由服务器分配）
         public int sessionID;
@@ -33,15 +33,17 @@ namespace BlueSeaGameFramework.server.Network.Client
         /// </summary>
         /// <param name="serverEndPoint">服务器终结点</param>
         /// <param name="Myprot">本地绑定端口</param>
-        public UClient(IPEndPoint clinetEndPoint, int sessionID, int handleSN)
+        public UClient(IPEndPoint clinetEndPoint, int SessionID, int handleSN)
         {
+            sessionID = SessionID;
             isConnected = true;
             uSocket = NetworkManager.Instance.uSocket;
             ClinetEndPoint = clinetEndPoint;
             sendSN = 0;  // 初始化发送序列号
             this.handleSN = handleSN;
             waitHandle = new ConcurrentDictionary<int, BufferEntity>();
-            Console.WriteLine($"有客户端连接，会话id是{sessionID}");
+            Debug.Log($"创建新客户端连接，客户端端口号{clinetEndPoint}，分配的会话id{sessionID},初始handleSN:{handleSN}，初始sendSN:{sendSN}");
+            Connect();
         }
 
 
@@ -65,6 +67,13 @@ namespace BlueSeaGameFramework.server.Network.Client
             BufferEntity bufferEntity = BufferFactory.creatEntityForSend(msgId, iMessage, ClinetEndPoint, sendSN, sessionID);  // 创建发送实体
             uSocket.Send(bufferEntity);  // 通过UDP传输层发送
         }
+        public void SendBroadcastBuffer(BufferEntity bufferEntity)
+        {
+            Debug.Log("1");
+            sendSN += 1;
+            BufferEntity broadcastBuffer = BufferFactory.creatEntityforBroadcast(ClinetEndPoint, sendSN, sessionID, bufferEntity.ProtocolData, bufferEntity.MessageId,bufferEntity.ProtocolSize);
+            uSocket.Send(broadcastBuffer);
+        }
 
         /// <summary>
         /// 主循环更新方法（待实现）
@@ -80,6 +89,7 @@ namespace BlueSeaGameFramework.server.Network.Client
         /// <param name="bufferEntity">接收到的数据实体</param>
         public void HandleLogicPackage(BufferEntity bufferEntity)
         {
+            Debug.Log($"收到来自客户端的逻辑报文，报文类型{bufferEntity.MessageId},会话id{bufferEntity.SessionId},sn{bufferEntity.SequenceNumber}");
             // 检查是否为已处理过的旧包
             if (bufferEntity.SequenceNumber <= handleSN)
             {
@@ -115,9 +125,9 @@ namespace BlueSeaGameFramework.server.Network.Client
         /// <param name="bufferEntity">要处理的数据实体</param>
         private void Dispatch(BufferEntity bufferEntity)
         {
-            MessageId messageId = bufferEntity.MessageId;
-            var messageWrapper = new MessageWrapper<BufferEntity>(bufferEntity);
-            NetworkManager.Instance.netEvent.Dispatch(messageId, messageWrapper);  // 通过事件系统分发
+            //直接转发了
+            Debug.Log("收到的是逻辑报文，将逻辑报文转发给其余玩家");
+            NetworkManager.Instance.broadcast(bufferEntity);
         }
 
         /// <summary>
@@ -128,5 +138,14 @@ namespace BlueSeaGameFramework.server.Network.Client
         {
             isConnected = true;  // 标记为已连接
         }
+
+        public void Connect()
+        {
+            BufferEntity bufferEntity = BufferFactory.creatConnectEntity(ClinetEndPoint,sendSN,sessionID);
+            Debug.Log("回复客户端同意连接报文");
+            uSocket.Send(bufferEntity);
+        }
+
+
     }
 }

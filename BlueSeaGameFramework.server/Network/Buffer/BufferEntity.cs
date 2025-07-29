@@ -71,11 +71,11 @@ namespace BlueSeaGameFramework.server.Network.Buffer
         /// <summary>
         /// 默认构造函数
         /// </summary>
-        public BufferEntity(IPEndPoint targetEndPoint, int sendSn)
+        public BufferEntity(IPEndPoint targetEndPoint, int sendSn,int sessionId)
         {
             TargetEndpoint = targetEndPoint;
             ProtocolSize = 0;
-            SessionId = 0;
+            SessionId = sessionId;
             SequenceNumber =sendSn;
             ModuleId = 0;
             MessageType = MessageType.CONNECT;
@@ -83,7 +83,6 @@ namespace BlueSeaGameFramework.server.Network.Buffer
             ProtocolData = null;
             SendTime = DateTime.UtcNow; // 使用UTC时间
             BufferData = SerializeToNetworkPacket(isAck:false);
-            
         }
 
         /// <summary>
@@ -220,6 +219,32 @@ namespace BlueSeaGameFramework.server.Network.Buffer
 
         public BufferEntity()
         {
+        }
+
+        public BufferEntity(IPEndPoint clinetEndPoint, int sequenceNumber, int sessionId,
+            byte[] bufferEntityProtocolData, MessageId bufferEntityMessageId, int bufferEntityProtocolSize)
+        {
+            Debug.Log($"{clinetEndPoint}{sequenceNumber}{sessionId}{bufferEntityMessageId}{bufferEntityProtocolSize}");
+            TargetEndpoint = clinetEndPoint;
+            Debug.Log("2q");
+            ProtocolSize =  bufferEntityProtocolSize;
+            Debug.Log("3f");
+                SessionId = sessionId;
+                Debug.Log("5gh");
+            SequenceNumber = sequenceNumber;
+            Debug.Log("sge");
+            ModuleId = 0;
+            Debug.Log("2afs");
+            SendTime =  DateTime.UtcNow;
+            Debug.Log("2sfa");
+            MessageType = MessageType.Login;
+            Debug.Log("2fagg");
+            MessageId  = bufferEntityMessageId;
+            Debug.Log("2fafgas");
+            ProtocolData = bufferEntityProtocolData;
+            Debug.Log("2");
+            SerializeToNetworkPacket(false);
+            Debug.Log("3");
         }
     }    
 }
