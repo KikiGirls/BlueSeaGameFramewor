@@ -6,8 +6,12 @@ using BlueSeaGameFramework.Network.Transport;
 using BlueSeaGameFramework.Network.Message;
 using Example.People;
 using Google.Protobuf;
+using Google.Protobuf.Collections;
+
 Console.WriteLine("Hello, World");
-People temp = new People();
+Person temp = new Person();
+temp.Id = 1;
+
 NetworkManager.SetCog(8891,"127.0.0.1", 8890);
 NetworkManager.Instance.Init();
 NetworkManager.Instance.Connect();

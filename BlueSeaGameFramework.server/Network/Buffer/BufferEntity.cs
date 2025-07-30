@@ -226,25 +226,18 @@ namespace BlueSeaGameFramework.server.Network.Buffer
         {
             Debug.Log($"{clinetEndPoint}{sequenceNumber}{sessionId}{bufferEntityMessageId}{bufferEntityProtocolSize}");
             TargetEndpoint = clinetEndPoint;
-            Debug.Log("2q");
             ProtocolSize =  bufferEntityProtocolSize;
-            Debug.Log("3f");
-                SessionId = sessionId;
-                Debug.Log("5gh");
+            SessionId = sessionId;
             SequenceNumber = sequenceNumber;
-            Debug.Log("sge");
             ModuleId = 0;
-            Debug.Log("2afs");
             SendTime =  DateTime.UtcNow;
-            Debug.Log("2sfa");
             MessageType = MessageType.Login;
-            Debug.Log("2fagg");
             MessageId  = bufferEntityMessageId;
-            Debug.Log("2fafgas");
+
             ProtocolData = bufferEntityProtocolData;
-            Debug.Log("2");
+
             SerializeToNetworkPacket(false);
-            Debug.Log("3");
+
         }
     }    
 }
