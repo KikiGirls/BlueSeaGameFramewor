@@ -1,6 +1,6 @@
 using BlueSeaGameFramework.server.Network.Transport;
 
-namespace BlueSeaGameFramework.server.Network.Client
+namespace BlueSeaGameFramework.server
 {
     /// <summary>
     /// 网络管理器（静态类）
@@ -55,9 +55,11 @@ namespace BlueSeaGameFramework.server.Network.Client
         /// <typeparam name="T">消息类型（必须实现IMessage）</typeparam>
         /// <param name="msgId">消息ID</param>
         /// <param name="handler">消息处理回调</param>
-        public void AddEventHandler<T>(MessageId msgId, Action<MessageWrapper<T>> handler) 
-            where T : IMessage, new()
-            => netEvent.AddEventHandler(msgId, handler);
+        public void AddEventHandler<T>(MessageId msgId, Action<BufferEntity> handler)
+        {
+            netEvent.AddEventHandler(msgId, handler);
+        }
+            
 
         /// <summary>
         /// 移除消息事件处理器
@@ -65,7 +67,7 @@ namespace BlueSeaGameFramework.server.Network.Client
         /// <typeparam name="T">消息类型</typeparam>
         /// <param name="msgId">消息ID</param>
         /// <param name="handler">消息处理回调</param>
-        public  void RemoveEventHandler<T>(MessageId msgId, Action<MessageWrapper<T>> handler) 
+        public  void RemoveEventHandler<T>(MessageId msgId, Action<BufferEntity> handler) 
             where T : IMessage
             => netEvent.RemoveEventHandler(msgId, handler);
 

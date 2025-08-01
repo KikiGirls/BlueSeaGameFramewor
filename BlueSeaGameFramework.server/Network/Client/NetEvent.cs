@@ -1,6 +1,6 @@
 
 
-namespace BlueSeaGameFramework.server.Network.Client
+namespace BlueSeaGameFramework.server
 {
     // NetEvent 类作为单例管理网络事件的注册与分发
     public class NetEvent : Singleton<NetEvent>
@@ -14,7 +14,7 @@ namespace BlueSeaGameFramework.server.Network.Client
         /// <typeparam name="T">消息类型，必须实现 IMessage 接口</typeparam>
         /// <param name="msgId">事件的唯一标识符</param>
         /// <param name="handler">处理事件的委托</param>
-        public void AddEventHandler<T>(MessageId msgId, Action<MessageWrapper<T>> handler) where T :  new()
+        public void AddEventHandler(MessageId msgId, Action<BufferEntity> handler)
         {
             
             // 参数检查
@@ -30,7 +30,7 @@ namespace BlueSeaGameFramework.server.Network.Client
         /// </summary>
         /// <typeparam name="T">消息类型</typeparam>
         /// <param name="msgId">要移除事件处理程序的消息 ID</param>
-        public void RemoveEventHandler<T>(MessageId msgId,  Action<MessageWrapper<T>> handler)
+        public void RemoveEventHandler(MessageId msgId,  Action<BufferEntity> handler)
         {
             // 参数检查
             if (msgId == null) throw new ArgumentNullException(nameof(msgId));
@@ -45,7 +45,7 @@ namespace BlueSeaGameFramework.server.Network.Client
         /// <typeparam name="T">消息类型</typeparam>
         /// <param name="msgId">事件的唯一标识符</param>
         /// <param name="message">要分发的消息</param>
-        public void Dispatch<T>(MessageId msgId, MessageWrapper<T> message) where T : new()
+        public void Dispatch<T>(MessageId msgId, BufferEntity message)
         {
             // 参数检查
             if (msgId == null) throw new ArgumentNullException(nameof(msgId));
@@ -54,7 +54,14 @@ namespace BlueSeaGameFramework.server.Network.Client
             if (eventHandlers.TryGetValue(msgId, out var handler))
             {
                 // 执行消息处理程序
-                ((Action<MessageWrapper<T>>)handler)?.Invoke(message);
+                if (handler is Action<BufferEntity> action)
+                {
+                    action(message);
+                }
+                else
+                {
+                    throw new InvalidOperationException("事件处理程序类型不匹配");
+                }
             }
         }
 

@@ -1,22 +1,5 @@
-namespace BlueSeaGameFramework.server.Network.Message;
+namespace BlueSeaGameFramework.server;
 
-
-public static class MessageIdHelper
-{
-    // 根据 ID 获取对应的枚举值，如果无效则返回 None
-    public static MessageId FromId(int id)
-    {
-        if (Enum.IsDefined(typeof(MessageId), id))
-        {
-            return (MessageId)id;
-      
-        }
-        else
-        {
-            return MessageId.None;  // 返回特定的无效值
-        }
-    }
-}
 
 public enum MessageId : int
 {

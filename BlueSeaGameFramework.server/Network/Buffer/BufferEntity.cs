@@ -1,4 +1,4 @@
-namespace BlueSeaGameFramework.server.Network.Buffer
+namespace BlueSeaGameFramework.server
 {
     /// <summary>
     /// 网络数据包实体类，用于封装网络通信协议数据

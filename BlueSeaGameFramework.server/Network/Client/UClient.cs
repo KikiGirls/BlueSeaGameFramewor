@@ -1,6 +1,8 @@
+
+
 using BlueSeaGameFramework.server.Network.Transport;
 
-namespace BlueSeaGameFramework.server.Network.Client
+namespace BlueSeaGameFramework.server
 {
     /// <summary>
     /// UDP客户端核心类，管理与服务器的UDP通信

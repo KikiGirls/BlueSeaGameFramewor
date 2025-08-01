@@ -1,6 +1,6 @@
 
 
-namespace BlueSeaGameFramework.server.Network.Buffer
+namespace BlueSeaGameFramework.server
 {
     /// <summary>
     /// 消息类型枚举
@@ -70,7 +70,7 @@ namespace BlueSeaGameFramework.server.Network.Buffer
         public static BufferEntity creatEntityForSend(MessageId msgId, IMessage iMessage, IPEndPoint targetEndPoint, int sendSn, int sessionId)
         {
             // 将协议消息序列化为字节数组
-            byte[] protocolData = ProtobufHelper.ToBytes(iMessage);
+            byte[] protocolData = ProtobufHelper.toByte(iMessage);
             
             // 创建完整的数据包（包含会话信息、序列号、消息类型等）
             BufferEntity bufferEntity = new BufferEntity(

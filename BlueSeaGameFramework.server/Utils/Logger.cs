@@ -1,4 +1,4 @@
-using Google.Protobuf;
+
 using System;
 
 
@@ -18,15 +18,6 @@ public class Debug
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine(log);
         Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine("*********************************************************************");
-    }
-
-
-    public static void Log(int messageID,IMessage message )
-    {
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine($"报文ID:{messageID}\n包体:{JsonHelper.SerializeObject(message)}");
-        Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine("*********************************************************************");
     }
 

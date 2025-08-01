@@ -9,6 +9,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\BlueSeaGameFramework.Network\BlueSeaGameFramework.Network.csproj" />
+      <ProjectReference Include="..\BlueSeaGameFramework.server\BlueSeaGameFramework.server.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="protobuf-net" Version="3.2.56" />
     </ItemGroup>
 
 </Project>
