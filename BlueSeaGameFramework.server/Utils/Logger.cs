@@ -20,5 +20,13 @@ public class Debug
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine("*********************************************************************");
     }
+    
+    public static void LogWarning(string log)
+    {
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine(log);
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine("*********************************************************************");
+    }
 
 }

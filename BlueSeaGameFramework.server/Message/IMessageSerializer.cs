@@ -2,7 +2,7 @@ using ProtoBuf;
 
 public static class ProtobufHelper
 {
-    public static byte[] toByte<T>(T obj) where T : IMessage
+    public static byte[] ToByte<T>(T obj) where T : IMessage
     {
         using var ms = new MemoryStream();
         Serializer.Serialize(ms, obj);

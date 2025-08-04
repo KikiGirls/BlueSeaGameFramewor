@@ -82,7 +82,7 @@ namespace BlueSeaGameFramework.server
             MessageId = MessageId.None;
             ProtocolData = null;
             SendTime = DateTime.UtcNow; // 使用UTC时间
-            BufferData = SerializeToNetworkPacket(isAck:false);
+            BufferData = SerializeToNetworkPacket(false);
         }
 
         /// <summary>
@@ -99,15 +99,17 @@ namespace BlueSeaGameFramework.server
             int moduleId, MessageType messageType, MessageId messageId, 
             byte[] protocolData)
         {
+            if (protocolData == null)
+                throw new ArgumentNullException(nameof(protocolData));
             ProtocolSize = protocolData.Length;
             SessionId = sessionId;
             SequenceNumber = sequenceNumber;
             ModuleId = moduleId;
             MessageType = messageType;
             MessageId = messageId;
-            ProtocolData = protocolData ?? throw new ArgumentNullException(nameof(protocolData));
+            ProtocolData = protocolData;
             SendTime = DateTime.UtcNow; // 使用UTC时间
-            BufferData = SerializeToNetworkPacket(isAck:false);
+            BufferData = SerializeToNetworkPacket(false);
         }
 
         /// <summary>
@@ -135,13 +137,12 @@ namespace BlueSeaGameFramework.server
                 writer.Write((int)MessageId);         // 4字节 - 消息ID
         
                 // 如果不是ACK包且存在业务数据，写入业务数据
-                if (!isAck && ProtocolData != null)
+                if (!isAck && ProtocolData != null && ProtocolData.Length > 0)
                 {
                     writer.Write(ProtocolData);
                 }
             }
     
-            BufferData = data;
             return data;
         }
         
@@ -157,9 +158,9 @@ namespace BlueSeaGameFramework.server
             // 基本校验
             if (data == null || data.Length < ProtocolHeaderSize)
                 throw new ArgumentException("无效的网络数据包");
-    
+
             var entity = new BufferEntity();
-    
+
             try
             {
                 using (var ms = new MemoryStream(data))
@@ -167,27 +168,30 @@ namespace BlueSeaGameFramework.server
                 {
                     // 读取协议大小
                     entity.ProtocolSize = reader.ReadInt32();
-                    
                     // 验证数据长度是否足够
                     int expectedLength = ProtocolHeaderSize + entity.ProtocolSize;
                     if (data.Length < expectedLength)
                         throw new InvalidDataException("数据包不完整");
-            
                     // 读取协议头各字段
                     entity.SessionId = reader.ReadInt32();
                     entity.SequenceNumber = reader.ReadInt32();
                     entity.ModuleId = reader.ReadInt32();
                     entity.SendTime = new DateTime(reader.ReadInt64(), DateTimeKind.Utc);
-                    entity.MessageType = (MessageType)reader.ReadInt32();
-                    entity.MessageId = (MessageId)reader.ReadInt32();
-                    
+                    int messageTypeValue = reader.ReadInt32();
+                    int messageIdValue = reader.ReadInt32();
+                    if (!Enum.IsDefined(typeof(MessageType), messageTypeValue))
+                        throw new InvalidDataException($"未知的MessageType: {messageTypeValue}");
+                    if (!Enum.IsDefined(typeof(MessageId), messageIdValue))
+                        throw new InvalidDataException($"未知的MessageId: {messageIdValue}");
+                    entity.MessageType = (MessageType)messageTypeValue;
+                    entity.MessageId = (MessageId)messageIdValue;
                     // 读取业务数据(如果有)
                     if (entity.ProtocolSize > 0)
                     {
                         entity.ProtocolData = reader.ReadBytes(entity.ProtocolSize);
                     }
                 }
-        
+                entity.BufferData = data;
                 return entity;
             }
             catch (Exception ex)
@@ -203,29 +207,26 @@ namespace BlueSeaGameFramework.server
         public BufferEntity(BufferEntity package)
         {
             TargetEndpoint = package.OriginEndpoint;
-            // 复制协议头字段
             ProtocolSize = 0; // ACK包没有业务数据
-            
             SessionId = package.SessionId;
             SequenceNumber = package.SequenceNumber;
             ModuleId = package.ModuleId;
             SendTime = DateTime.UtcNow; // 使用当前UTC时间
             MessageType = MessageType.ACK;    // 设置为ACK类型
             MessageId = package.MessageId;
-    
-            // 直接序列化为网络数据包
-            BufferData = SerializeToNetworkPacket(isAck:true);
+            BufferData = SerializeToNetworkPacket(true);
         }
 
         public BufferEntity()
         {
         }
 
-        public BufferEntity(IPEndPoint clinetEndPoint, int sequenceNumber, int sessionId,
+        public BufferEntity(IPEndPoint clientEndPoint, int sequenceNumber, int sessionId,
             byte[] bufferEntityProtocolData, MessageId bufferEntityMessageId, int bufferEntityProtocolSize)
         {
-            Debug.Log($"{clinetEndPoint}{sequenceNumber}{sessionId}{bufferEntityMessageId}{bufferEntityProtocolSize}");
-            TargetEndpoint = clinetEndPoint;
+            // Console.WriteLine用于非Unity环境
+            Console.WriteLine($"{clientEndPoint}{sequenceNumber}{sessionId}{bufferEntityMessageId}{bufferEntityProtocolSize}");
+            TargetEndpoint = clientEndPoint;
             ProtocolSize =  bufferEntityProtocolSize;
             SessionId = sessionId;
             SequenceNumber = sequenceNumber;
@@ -233,11 +234,8 @@ namespace BlueSeaGameFramework.server
             SendTime =  DateTime.UtcNow;
             MessageType = MessageType.Login;
             MessageId  = bufferEntityMessageId;
-
             ProtocolData = bufferEntityProtocolData;
-
-            SerializeToNetworkPacket(false);
-
+            BufferData = SerializeToNetworkPacket(false);
         }
     }    
 }

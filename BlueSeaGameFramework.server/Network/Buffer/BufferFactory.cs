@@ -1,5 +1,3 @@
-
-
 namespace BlueSeaGameFramework.server
 {
     /// <summary>
@@ -10,7 +8,6 @@ namespace BlueSeaGameFramework.server
         ACK = 0,        // 确认报文（用于可靠传输确认）
         Login = 1,      // 登录业务逻辑报文
         CONNECT = 2,    // 连接请求报文
-        DISCONNECT = 3, // 断开连接报文
     }
 
     /// <summary>
@@ -23,7 +20,7 @@ namespace BlueSeaGameFramework.server
         /// </summary>
         /// <param name="bufferEntity">需要确认的原始数据包</param>
         /// <returns>ACK确认包实例</returns>
-        public static BufferEntity creatAckBuffer(BufferEntity bufferEntity)
+        public static BufferEntity CreateAckBuffer(BufferEntity bufferEntity)
         {
             // 基于原始包创建ACK包（通常只需复制关键字段）
             BufferEntity AckbufferEntity = new BufferEntity(bufferEntity);
@@ -36,7 +33,7 @@ namespace BlueSeaGameFramework.server
         /// <param name="resultRemoteEndPoint">数据来源终结点</param>
         /// <param name="resultBuffer">原始网络字节数据</param>
         /// <returns>解析后的缓冲区实体</returns>
-        public static BufferEntity creatEntityByResult(IPEndPoint resultRemoteEndPoint, byte[] resultBuffer)
+        public static BufferEntity CreateEntityByResult(IPEndPoint resultRemoteEndPoint, byte[] resultBuffer)
         {
             // 从网络字节数据解析出缓冲区实体
             BufferEntity bufferEntity = BufferEntity.ParseFromNetworkPacket(resultBuffer);
@@ -51,10 +48,10 @@ namespace BlueSeaGameFramework.server
         /// <param name="targetEndPoint">目标服务器地址</param>
         /// <param name="sendSn">发送序列号</param>
         /// <returns>连接请求包实例</returns>
-        public static BufferEntity creatConnectEntity(IPEndPoint targetEndPoint, int sendSn, int  sessionId)
+        public static BufferEntity CreateConnectEntity(IPEndPoint targetEndPoint, int sendSn, int sessionId)
         {
             // 创建包含目标地址和序列号的基础连接包
-            BufferEntity bufferEntity = new BufferEntity(targetEndPoint, sendSn,sessionId);
+            BufferEntity bufferEntity = new BufferEntity(targetEndPoint, sendSn, sessionId);
             return bufferEntity;
         }
 
@@ -67,10 +64,10 @@ namespace BlueSeaGameFramework.server
         /// <param name="sendSn">发送序列号</param>
         /// <param name="sessionId">会话ID</param>
         /// <returns>完整的数据发送包</returns>
-        public static BufferEntity creatEntityForSend(MessageId msgId, IMessage iMessage, IPEndPoint targetEndPoint, int sendSn, int sessionId)
+        public static BufferEntity CreateEntityForSend(MessageId msgId, IMessage iMessage, IPEndPoint targetEndPoint, int sendSn, int sessionId)
         {
             // 将协议消息序列化为字节数组
-            byte[] protocolData = ProtobufHelper.toByte(iMessage);
+            byte[] protocolData = ProtobufHelper.ToByte(iMessage);
             
             // 创建完整的数据包（包含会话信息、序列号、消息类型等）
             BufferEntity bufferEntity = new BufferEntity(
@@ -88,12 +85,10 @@ namespace BlueSeaGameFramework.server
         }
 
 
-        public static BufferEntity creatEntityforBroadcast(IPEndPoint clinetEndPoint, int sendSn, int sessionId,
+        public static BufferEntity CreateEntityForBroadcast(IPEndPoint clientEndPoint, int sendSn, int sessionId,
             byte[] bufferEntityProtocolData, MessageId bufferEntityMessageId, int bufferEntityProtocolSize)
         {
-            Debug.Log("创建广播报文成功");
-            BufferEntity bufferEntity = new BufferEntity(clinetEndPoint, sendSn, sessionId, bufferEntityProtocolData,bufferEntityMessageId,bufferEntityProtocolSize);
-            Debug.Log("创建广播报文成功");
+            BufferEntity bufferEntity = new BufferEntity(clientEndPoint, sendSn, sessionId, bufferEntityProtocolData, bufferEntityMessageId, bufferEntityProtocolSize);
             return bufferEntity;
         }
     }

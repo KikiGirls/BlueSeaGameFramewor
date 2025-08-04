@@ -1,0 +1,12 @@
+namespace BlueSeaGameFramework.server;
+
+
+public enum MessageId : int
+{
+    None = 0,
+    GameInitEventMsg = 101,
+    GameStartEventMsg = 102,
+    PlayerTurnChangeEventMsg = 103,
+    EndcurrentTurnEventMsg = 104,
+    PlayerMoveEventMsg = 105,
+}

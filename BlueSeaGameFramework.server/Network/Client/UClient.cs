@@ -1,6 +1,6 @@
 
 
-using BlueSeaGameFramework.server.Network.Transport;
+using BlueSeaGameFramework.server.Network;
 
 namespace BlueSeaGameFramework.server
 {
@@ -39,7 +39,7 @@ namespace BlueSeaGameFramework.server
         {
             sessionID = SessionID;
             isConnected = true;
-            uSocket = NetworkManager.Instance.uSocket;
+            uSocket = NetworkManager.Instance.USocket;
             ClinetEndPoint = clinetEndPoint;
             sendSN = 0;  // 初始化发送序列号
             this.handleSN = handleSN;
@@ -66,14 +66,13 @@ namespace BlueSeaGameFramework.server
         public void Send(MessageId msgId, IMessage iMessage)
         {
             sendSN += 1;  // 递增序列号
-            BufferEntity bufferEntity = BufferFactory.creatEntityForSend(msgId, iMessage, ClinetEndPoint, sendSN, sessionID);  // 创建发送实体
+            BufferEntity bufferEntity = BufferFactory.CreateEntityForSend(msgId, iMessage, ClinetEndPoint, sendSN, sessionID);  // 创建发送实体
             uSocket.Send(bufferEntity);  // 通过UDP传输层发送
         }
         public void SendBroadcastBuffer(BufferEntity bufferEntity)
         {
-            Debug.Log("1");
             sendSN += 1;
-            BufferEntity broadcastBuffer = BufferFactory.creatEntityforBroadcast(ClinetEndPoint, sendSN, sessionID, bufferEntity.ProtocolData, bufferEntity.MessageId,bufferEntity.ProtocolSize);
+            BufferEntity broadcastBuffer = BufferFactory.CreateEntityForBroadcast(ClinetEndPoint, sendSN, sessionID, bufferEntity.ProtocolData, bufferEntity.MessageId,bufferEntity.ProtocolSize);
             uSocket.Send(broadcastBuffer);
         }
 
@@ -129,7 +128,7 @@ namespace BlueSeaGameFramework.server
         {
             //直接转发了
             Debug.Log("收到的是逻辑报文，将逻辑报文转发给其余玩家");
-            NetworkManager.Instance.broadcast(bufferEntity);
+            NetworkManager.Instance.Broadcast(bufferEntity);
         }
 
         /// <summary>
@@ -143,7 +142,7 @@ namespace BlueSeaGameFramework.server
 
         public void Connect()
         {
-            BufferEntity bufferEntity = BufferFactory.creatConnectEntity(ClinetEndPoint,sendSN,sessionID);
+            BufferEntity bufferEntity = BufferFactory.CreateConnectEntity(ClinetEndPoint,sendSN,sessionID);
             Debug.Log("回复客户端同意连接报文");
             uSocket.Send(bufferEntity);
         }
