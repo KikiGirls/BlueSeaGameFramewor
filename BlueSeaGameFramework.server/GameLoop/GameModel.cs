@@ -292,24 +292,5 @@ using QFramework;
             isGameTimePaused = false;
         }
         
-        /// <summary>
-        /// 设置最大回合数
-        /// </summary>
-        /// <param name="maxTurns">最大回合数</param>
-        public void SetMaxTurns(int maxTurns)
-        {
-            if (maxTurns > 0)
-                MaxTurns = maxTurns;
-        }
-        
-        /// <summary>
-        /// 设置回合时间限制
-        /// </summary>
-        /// <param name="timeLimit">时间限制（秒）</param>
-        public void SetTurnTimeLimit(double timeLimit)
-        {
-            if (timeLimit > 0)
-                TurnTimeLimit = timeLimit;
-        }
     }
 

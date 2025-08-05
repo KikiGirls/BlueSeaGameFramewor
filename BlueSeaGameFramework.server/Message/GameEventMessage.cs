@@ -7,6 +7,7 @@ using ProtoBuf;
 [ProtoInclude(101, typeof(GameInitEventMsg))]
 [ProtoInclude(102, typeof(GameStartEventMsg))]
 [ProtoInclude(103, typeof(PlayerTurnChangeEventMsg))]
+[ProtoInclude(104, typeof(EndcurrentTurnEventMsg))]
 public class IMessage
 { // 可以放一些通用字段，比如协议版本等
 }
