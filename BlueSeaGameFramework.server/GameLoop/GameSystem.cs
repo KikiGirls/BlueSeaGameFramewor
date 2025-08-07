@@ -62,9 +62,7 @@ namespace BlueSeaGameFramework.server.GameLoop
             // 初始化时间循环控制器
             _timeLoop = new GameServerTimeLoop(60); // 设置为60FPS
             
-            // 注册网络事件处理器，监听客户端游戏初始化事件
-            NetworkManager.Instance.AddEventHandler(MessageId.GameInitEventMsg, HandleClientGameInitEventMsg);
-
+            RegisterEvents();
             Debug.Log($"{_debugPrefix} 游戏系统初始化完成");
         }
 
@@ -159,7 +157,6 @@ namespace BlueSeaGameFramework.server.GameLoop
             };
             NetworkManager.Instance.BroadcastToAll(MessageId.PlayerTurnChangeEventMsg, turnChangeEvent);
             Debug.Log($"{_debugPrefix} 轮到玩家 {gameModel.CurrentPlayer}");
-                
         }
 
         /// <summary>
@@ -189,23 +186,44 @@ namespace BlueSeaGameFramework.server.GameLoop
         private void StartGameLoop()
         {
             Debug.Log($"{_debugPrefix} 所有玩家均已初始化完成，发送游戏开始事件");
+            gameModel.StartGame();
             // 创建游戏开始事件并广播给所有客户端
-            var gameStartEventMsg = new GameStartEventMsg();
-            NetworkManager.Instance.BroadcastToAll(MessageId.GameStartEventMsg, gameStartEventMsg);
+            var playerTurnChangeEventMsg = new PlayerTurnChangeEventMsg()
+            {
+                NewPlayerName = gameModel.CurrentPlayer,
+                TurnNumber = gameModel.CurrentTurn
+            };
+            NetworkManager.Instance.BroadcastToAll(MessageId.PlayerTurnChangeEventMsg, playerTurnChangeEventMsg);
             // 移除初始化事件监听器，因为初始化阶段已完成
             NetworkManager.Instance.RemoveEventHandler(MessageId.GameInitEventMsg);
 
-            RegisterEvents();
+
             // 启动游戏循环
             StartGameTimeLoop();
         }
 
         private void RegisterEvents()
         {
+            NetworkManager.Instance.AddEventHandler(MessageId.GameInitEventMsg, HandleClientGameInitEventMsg);
             NetworkManager.Instance.AddEventHandler(MessageId.EndcurrentTurnEventMsg, HandleEndcurrentTurnEventMsg);
             NetworkManager.Instance.AddEventHandler(MessageId.PlayerMoveEventMsg, HandlePlayerMoveEventMsg);
+            NetworkManager.Instance.AddEventHandler(MessageId.GameTimePauseEventMag, HandleGameTimePauseEventMag);
+            NetworkManager.Instance.AddEventHandler(MessageId.GameTimeResumeEventMsg, HandleGameTimeResumeEventMag);
         }
-        
+
+        private void HandleGameTimeResumeEventMag(BufferEntity obj)
+        {
+            gameModel.ResumeGameTime();
+            Debug.Log($"{_debugPrefix} 恢复游戏时间");
+            NetworkManager.Instance.Broadcast(obj);
+        }
+
+        private void HandleGameTimePauseEventMag(BufferEntity obj)
+        {
+            gameModel.PauseGameTime();
+            Debug.Log($"{_debugPrefix} 暂停游戏时间");
+            NetworkManager.Instance.Broadcast(obj);
+        }
 
         #endregion
 
@@ -263,13 +281,13 @@ namespace BlueSeaGameFramework.server.GameLoop
         }
         private void HandleEndcurrentTurnEventMsg(BufferEntity obj)
         {
-            var playerEndTurnMessage = ProtobufHelper.GetIMessageFormByte<EndcurrentTurnEventMsg>(obj.ProtocolData);
             ToNextTurn();
         }
         private void HandlePlayerMoveEventMsg(BufferEntity obj)
         {
             NetworkManager.Instance.Broadcast(obj);
         }
+        
         
         #endregion
     }

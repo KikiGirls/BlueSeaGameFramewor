@@ -2,12 +2,13 @@ using ProtoBuf;
 
 #region Imessage
 [ProtoContract]
-[ProtoInclude(5, typeof(QText))]
-[ProtoInclude(6, typeof(PlayerMOve))]
 [ProtoInclude(101, typeof(GameInitEventMsg))]
 [ProtoInclude(102, typeof(GameStartEventMsg))]
 [ProtoInclude(103, typeof(PlayerTurnChangeEventMsg))]
 [ProtoInclude(104, typeof(EndcurrentTurnEventMsg))]
+[ProtoInclude(105, typeof(GameTimePauseEventMag))]
+[ProtoInclude(106, typeof(GameTimeResumeEventMsg))]
+[ProtoInclude(107, typeof(PlayerMoveEventMsg))]
 public class IMessage
 { // 可以放一些通用字段，比如协议版本等
 }
@@ -15,9 +16,19 @@ public class IMessage
 
 #endregion
 
+[ProtoContract]
+public class GameTimePauseEventMag
+{
+    [ProtoMember(1)]
+    public PlayerName PlayerName;
+}
 
-
-
+[ProtoContract]
+public class GameTimeResumeEventMsg
+{
+    [ProtoMember(1)]
+    public PlayerName PlayerName;
+}
 
 #region 客户端发送给服务器的消息
 [ProtoContract]
@@ -29,12 +40,6 @@ public class EndcurrentTurnEventMsg : IMessage
     public int TurnNumber; // 当前回合数
 }
 
-[ProtoContract]
-public class QText : IMessage
-{
-    [ProtoMember(1)]
-    public int id;
-}
 
 [ProtoContract]
 public class PlayerMoveEventMsg : IMessage
@@ -49,18 +54,6 @@ public class PlayerMoveEventMsg : IMessage
     public float z; // z坐标
 }
 
-[ProtoContract]
-public class PlayerMOve : IMessage
-{
-    [ProtoMember(1)]
-    public int Playerid;
-
-    [ProtoMember(2)] public float x;
-    
-    [ProtoMember(3)] public float y;
-    
-    [ProtoMember(4)] public float z;
-}
 
 
 [ProtoContract]

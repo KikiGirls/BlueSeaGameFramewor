@@ -8,5 +8,7 @@ public enum MessageId : int
     GameStartEventMsg = 102,
     PlayerTurnChangeEventMsg = 103,
     EndcurrentTurnEventMsg = 104,
-    PlayerMoveEventMsg = 105,
+    PlayerMoveEventMsg = 107,
+    GameTimePauseEventMag = 105,
+    GameTimeResumeEventMsg = 106
 }
